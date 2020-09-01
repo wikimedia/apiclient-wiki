@@ -16,7 +16,7 @@
           success: function(page) {
             $('page-title').text(page.title)
             $('page-content').html(page.html)
-          }
+          })
       }
       $(document).ready(function() {
         fetchPage('Main Page')

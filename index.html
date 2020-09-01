@@ -28,7 +28,7 @@
       }
       $(document).ready(function() {
         $(window).on('popstate', function(event) {
-          if (event && event.state && event.state.key) {
+          if (event && event.originalEvent && event.originalEvent.state && event.originalEvent.state.key) {
             fetchPage(event.state.key)
           }
         })

@@ -30,7 +30,7 @@
         $(window).on('popstate', function(event) {
           if (event && event.originalEvent && event.originalEvent.state && event.originalEvent.state.key) {
             event.preventDefault()
-            fetchPage(event.state.key)
+            fetchPage(event.originalEvent.state.key)
             return false
           }
         })

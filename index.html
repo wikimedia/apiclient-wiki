@@ -16,6 +16,11 @@
           success: function(page) {
             $('#page-title').text(page.title)
             $('#page-content').html(page.html)
+            $('a[rel="mw:WikiLink"]').click(function(event) {
+              event.preventDefault()
+              let title = $(this).title()
+              fetchPage(title)
+            })
           }})
       }
       $(document).ready(function() {

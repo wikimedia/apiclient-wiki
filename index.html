@@ -5,8 +5,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
   </head>
   <body>
-    <h1>Wikimedia API Client</h1>
-    <div id="page">
+    <h1>Wikimedia API Client - <span id="page-title">Main Page</span></h1>
+    <div id="page-content">
     </div>
+    <script>
+      const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
+      const fetchPage = function(pageTitle) {
+        $.get({
+          url: `${root}page/${pageTitle}/with_html`,
+          success: function(page) {
+            $('page-title').text(page.title)
+            $('page-content').html(page.html)
+          }
+      }
+      $(document).ready(function() {
+        fetchPage('Main Page')
+      })
+    </script>
   </body>
 </html>

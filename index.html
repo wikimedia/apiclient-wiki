@@ -14,8 +14,8 @@
         $.get({
           url: `${root}page/${pageTitle}/with_html`,
           success: function(page) {
-            $('page-title').text(page.title)
-            $('page-content').html(page.html)
+            $('#page-title').text(page.title)
+            $('#page-content').html(page.html)
           }})
       }
       $(document).ready(function() {

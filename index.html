@@ -18,7 +18,7 @@
             $('#page-content').html(page.html)
             $('a[rel="mw:WikiLink"]').click(function(event) {
               event.preventDefault()
-              let title = $(this).title()
+              let title = $(this).attr('title')
               fetchPage(title)
             })
           }})

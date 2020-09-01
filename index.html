@@ -16,14 +16,21 @@
           success: function(page) {
             $('#page-title').text(page.title)
             $('#page-content').html(page.html)
+            history.pushState({title: page.title, id: page.id, key: page.key}, page.key, `/page/${page.key}`)
             $('a[rel="mw:WikiLink"]').click(function(event) {
               event.preventDefault()
               let title = $(this).attr('title')
               fetchPage(title)
+              return false
             })
           }})
       }
       $(document).ready(function() {
+        $(window).on('popstate', function(event) {
+          if (event && event.state && event.state.key) {
+            fetchPage(event.state.key)
+          }
+        })
         fetchPage('Main Page')
       })
     </script>

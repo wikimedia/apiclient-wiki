@@ -44,6 +44,10 @@ const routeTo = function(pathname) {
   noSuchRoute(pathname)
 }
 
+const goHome = function() {
+  routeTo('/')
+}
+
 $(document).ready(function() {
   $(window).on('popstate', function(event) {
     if (event && event.originalEvent && event.originalEvent.state && event.originalEvent.state.key) {
@@ -52,5 +56,7 @@ $(document).ready(function() {
       return false
     }
   })
+  $('.navbar-brand').click(goHome)
+  $('.navbar-home').click(goHome)
   routeTo(document.location.pathname)
 })

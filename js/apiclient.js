@@ -13,7 +13,9 @@ const fetchPage = function(pageTitle) {
     url: `${root}page/${pageTitle}/with_html`,
     success: function(page) {
       $('#page-title').text(page.title)
-      $('#page-content').html(page.html)
+      let html = $.parseHtml(page.html)
+      let content = $(html).find('body').html()
+      $('#page-content').html(content)
       history.pushState({title: page.title, id: page.id, key: page.key}, page.key, `${server}page/${page.key}`)
       $('a[rel="mw:WikiLink"]').click(function(event) {
         event.preventDefault()

@@ -39,7 +39,7 @@
       const routeTo = function(pathname) {
         for (let route of routes) {
           let [re, handler] = route
-          let m = re.match(pathname)
+          let m = pathname.match(re)
           if (m) {
             handler(m)
             return

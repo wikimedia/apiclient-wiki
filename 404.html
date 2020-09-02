@@ -31,10 +31,10 @@
         $('#page-content').text(`No such page ${pathname}`)
       }
       const routes = [
-        [new RegExp('/'), function(match) { fetchPage('Main Page')}],
-        [new RegExp('/index'), function(match) { fetchPage('Main Page')}],
-        [new RegExp('/index.html'), function(match) { fetchPage('Main Page')}],
-        [new RegExp('/page/(.*)'), function(match) { fetchPage(match[1]) }]
+        [new RegExp('^/$'), function(match) { fetchPage('Main Page')}],
+        [new RegExp('^/index$'), function(match) { fetchPage('Main Page')}],
+        [new RegExp('^/index.html$'), function(match) { fetchPage('Main Page')}],
+        [new RegExp('^/page/(.*)$'), function(match) { fetchPage(match[1]) }]
       ]
       const routeTo = function(pathname) {
         for (let route of routes) {

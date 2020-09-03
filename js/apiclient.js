@@ -10,10 +10,13 @@ const routes = [
 
 const fetchPage = function(pageTitle) {
   $.get({
-    url: `${root}page/${pageTitle}/bare`,
+    url: `${root}page/${pageTitle}/with_html`,
     success: function(page) {
       $('#page-title').text(page.title)
-      $('#page-content').attr("src", page.html_url)
+      let elements = $.parseHTML(page.html)
+      let sections = elements.filter((el) => el.tagName == "SECTION")
+      let content = sections.map((el) => el.outerHTML).join("")
+      $('#page-content').html(content)
       history.pushState({title: page.title, id: page.id, key: page.key}, page.key, `${server}page/${page.key}`)
       $('a[rel="mw:WikiLink"]').click(function(event) {
         event.preventDefault()

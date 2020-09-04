@@ -101,13 +101,15 @@ function base64urlencode(str) {
     // btoa accepts chars only within ascii 0-255 and base64 encodes them.
     // Then convert the base64 encoded to base64url encoded
     //   (replace + with -, replace / with _, trim trailing =)
-    return btoa(String.fromCharCode.apply(null, new Uint8Array(str)))
-        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    let based = btoa(str)
+    let urled = based.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    return urled
 }
 
 function pkceChallengeFromVerifier(v) {
     let hashed = sha256(v)
-    return base64urlencode(hashed)
+    let challenge = base64urlencode(hashed)
+    return challenge
 }
 
 $(document).ready(function() {

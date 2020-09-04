@@ -122,9 +122,9 @@ $(document).ready(function() {
       return false
     }
   })
-  $('.navbar-brand').click(goHome)
-  $('.navbar-home').click(goHome)
-  $('.navbar-login').click(startLogin)
+  $('#navbar-brand').click(goHome)
+  $('#navbar-home').click(goHome)
+  $('#navbar-login').click(startLogin)
   let path = getPath()
   routeTo(path)
 })

@@ -4,6 +4,7 @@
 const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
 const authorize = 'https://meta.wikimedia.org/w/rest.php/oauth2/authorize'
 const server = 'https://apiclient.wiki/'
+const clientID = "6ac53a07b581e30e47664cd9e8f3d0e4"
 
 const routes = [
   [new RegExp('^/$'), function(match) { fetchPage('Main Page')}],
@@ -54,7 +55,6 @@ const goHome = function() {
 }
 
 const startLogin = function() {
-  let clientID = getClientID()
   let pkce = makePKCE()
   savePKCE(pkce)
   let params = {
@@ -69,10 +69,6 @@ const startLogin = function() {
   let url = `${authorize}?${str}`
   window.location = url
   return false
-}
-
-const getClientID = function() {
-  return $("#client-id").text()
 }
 
 const getPath = function() {
@@ -110,7 +106,7 @@ function base64urlencode(str) {
 }
 
 function pkceChallengeFromVerifier(v) {
-    hashed = sha256(v)
+    let hashed = sha256(v)
     return base64urlencode(hashed)
 }
 

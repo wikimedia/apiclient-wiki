@@ -3,7 +3,9 @@
 
 const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
 const authorize = 'https://meta.wikimedia.org/w/rest.php/oauth2/authorize'
+const token = 'https://meta.wikimedia.org/w/rest.php/oauth2/access_token'
 const server = 'https://apiclient.wiki/'
+
 const clientID = "6ac53a07b581e30e47664cd9e8f3d0e4"
 
 const routes = [
@@ -71,6 +73,62 @@ const startLogin = function() {
   return false
 }
 
+const endLogin = function() {
+  let query = (new URL(document.location)).searchParams
+  let code = query.get('code')
+  let state = query.get('state')
+  let pkce = loadPKCE()
+  let data = {
+    grant_type: authorization_code,
+    code: code,
+    redirect_uri: `${server}callback`,
+    client_id: clientID,
+    code_verifier: pkce.codeVerifier
+  }
+  $.post({
+    url: token,
+    dataType: "json",
+    data: data,
+    success: function(results) {
+      saveLoginResults(results)
+      resetNavbar()
+      routeTo(state)
+    }
+  })
+}
+
+const saveLoginResults = function(results) {
+  // TODO: save other important data
+  localStorage.setItem('access_token', results.access_token)
+  localStorage.setItem('refresh_token', results.refresh_token)
+}
+
+const eraseLoginResults = function() {
+  // TODO: save other important data
+  localStorage.setItem('access_token', null)
+  localStorage.setItem('refresh_token', null)
+}
+
+const isLoggedIn = function() {
+  return getAccessToken()
+}
+
+const getAccessToken = function() {
+  return localStorage.getItem('access_token')
+}
+
+const resetNavbar = function() {
+  if (isLoggedIn()) {
+    $("#navbar-aboutme").removeClass("invisible").addClass("visible")
+    $("#navbar-logout").removeClass("invisible").addClass("visible")
+    $("#navbar-login").removeClass("visible").addClass("invisible")
+  } else {
+    $("#navbar-login").removeClass("invisible").addClass("visible")
+    $("#navbar-aboutme").removeClass("visible").addClass("invisible")
+    $("#navbar-logout").removeClass("visible").addClass("invisible")
+  }
+}
+
 const getPath = function() {
   return document.location.pathname
 }
@@ -87,6 +145,15 @@ const makePKCE = function() {
 const savePKCE = function(pkce) {
   localStorage.setItem("pkce_state", pkce.state)
   localStorage.setItem("pkce_code_verifier", pkce.codeVerifier)
+}
+
+const loadPKCE = function() {
+  let pkce = {
+    state: localStorage.getItem("pkce_state"),
+    codeVerifier: localStorage.getItem("pkce_code_verifier")
+  }
+  pkce.codeChallenge = pkceChallengeFromVerifier(pkce.codeVerifier)
+  return pkce
 }
 
 const generateRandomString = function() {
@@ -122,6 +189,7 @@ $(document).ready(function() {
   })
   $('#navbar-brand').click(goHome)
   $('#navbar-home').click(goHome)
+  resetNavbar()
   $('#navbar-login').click(startLogin)
   let path = getPath()
   routeTo(path)

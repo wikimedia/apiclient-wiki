@@ -79,7 +79,7 @@ const endLogin = function() {
   let state = query.get('state')
   let pkce = loadPKCE()
   let data = {
-    grant_type: authorization_code,
+    grant_type: "authorization_code",
     code: code,
     redirect_uri: `${server}callback`,
     client_id: clientID,

@@ -187,11 +187,29 @@ $(document).ready(function() {
       return false
     }
   })
-  
+
   $('#navbar-brand').click(goHome)
   $('#navbar-home').click(goHome)
   $('#navbar-login').click(startLogin)
   resetNavbar()
+  $('#navbar-search').autoComplete({
+    resolver: 'custom',
+    events: {
+      search: function (qry, callback) {
+        // let's do a custom ajax call
+        $.get(
+          `${root}search/title`,
+          {'q': qry}
+          function(results) {
+            let searchFormat = results.pages.map(function(page) {
+              return {id: page.key, title: page.title}
+            })
+            return searchFormat
+          }
+        )
+      }
+    }
+  });
 
   let path = getPath()
   routeTo(path)

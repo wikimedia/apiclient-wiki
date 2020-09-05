@@ -187,10 +187,12 @@ $(document).ready(function() {
       return false
     }
   })
+  
   $('#navbar-brand').click(goHome)
   $('#navbar-home').click(goHome)
-  resetNavbar()
   $('#navbar-login').click(startLogin)
+  resetNavbar()
+
   let path = getPath()
   routeTo(path)
 })

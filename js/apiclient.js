@@ -1,4 +1,5 @@
 // PKCE code Copyright (c) 2019 Aaron Parecki
+// MIT Public License
 // https://github.com/aaronpk/pkce-vanilla-js
 
 const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'

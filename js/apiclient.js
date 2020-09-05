@@ -202,7 +202,6 @@ $(document).ready(function() {
           {'q': qry},
           function(results) {
             let searchFormat = results.pages.map((page) => page.title)
-            })
             callback(searchFormat)
           }
         )

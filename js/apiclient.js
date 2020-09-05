@@ -201,8 +201,7 @@ $(document).ready(function() {
           `${root}search/title`,
           {'q': qry},
           function(results) {
-            let searchFormat = results.pages.map(function(page) {
-              return {id: page.key, title: page.title}
+            let searchFormat = results.pages.map((page) => page.title)
             })
             callback(searchFormat)
           }

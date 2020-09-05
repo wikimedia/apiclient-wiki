@@ -196,11 +196,12 @@ $(document).ready(function() {
     resolver: 'custom',
     events: {
       search: function (qry, callback) {
+        // let's do a custom ajax call
         $.get(
           `${root}search/title`,
           {'q': qry},
           function(results) {
-            let searchFormat = results.pages.map((page) => {id: page.key, title: page.title})
+            let searchFormat = results.pages.map((page) => page.title)
             callback(searchFormat)
           }
         )

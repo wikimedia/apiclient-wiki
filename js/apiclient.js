@@ -199,12 +199,12 @@ $(document).ready(function() {
         // let's do a custom ajax call
         $.get(
           `${root}search/title`,
-          {'q': qry}
+          {'q': qry},
           function(results) {
             let searchFormat = results.pages.map(function(page) {
               return {id: page.key, title: page.title}
             })
-            return searchFormat
+            callback(searchFormat)
           }
         )
       }

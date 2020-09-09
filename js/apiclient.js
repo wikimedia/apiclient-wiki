@@ -176,7 +176,9 @@ function base64urlencode(str) {
 }
 
 function pkceChallengeFromVerifier(v) {
-    let hashed = sha256(v)
+    let hash = sha256.create()
+    hash.update(v)
+    let hashed = hash.array()
     let challenge = base64urlencode(hashed)
     return challenge
 }

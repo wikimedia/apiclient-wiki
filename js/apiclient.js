@@ -166,7 +166,6 @@ const generateRandomString = function() {
 // Base64-urlencodes the input string
 function base64urlencode(str) {
     return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-    return urled
 }
 
 function pkceChallengeFromVerifier(v) {

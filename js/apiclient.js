@@ -179,6 +179,7 @@ function pkceChallengeFromVerifier(v) {
     let hash = sha256.create()
     hash.update(v)
     let hashed = hash.array()
+    let stringed = String.fromCharCode.apply(null, hashed)
     let challenge = base64urlencode(hashed)
     return challenge
 }

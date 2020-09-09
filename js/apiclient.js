@@ -91,6 +91,7 @@ const endLogin = function() {
     dataType: "json",
     data: data,
     success: function(results) {
+      clearPKCE()
       saveLoginResults(results)
       resetNavbar()
       routeTo(state)
@@ -102,6 +103,7 @@ const saveLoginResults = function(results) {
   // TODO: save other important data
   localStorage.setItem('access_token', results.access_token)
   localStorage.setItem('refresh_token', results.refresh_token)
+  localStorage.setItem('access_token_expired_ms', Date.now() + results.expires_in  * 1000)
 }
 
 const eraseLoginResults = function() {
@@ -155,6 +157,11 @@ const loadPKCE = function() {
   }
   pkce.codeChallenge = pkceChallengeFromVerifier(pkce.codeVerifier)
   return pkce
+}
+
+const clearPKCE = function(pkce) {
+  localStorage.removeItem("pkce_state")
+  localStorage.removeItem("pkce_code_verifier")
 }
 
 const generateRandomString = function() {

@@ -170,7 +170,8 @@ function base64urlencode(str) {
     // Then convert the base64 encoded to base64url encoded
     //   (replace + with -, replace / with _, trim trailing =)
     let based = btoa(str)
-    let urled = based.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    let trimmed = based.replace(/=+$/, '')
+    let urled = trimmed.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
     return urled
 }
 

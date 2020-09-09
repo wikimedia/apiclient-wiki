@@ -165,13 +165,7 @@ const generateRandomString = function() {
 
 // Base64-urlencodes the input string
 function base64urlencode(str) {
-    // Convert the ArrayBuffer to string using Uint8 array to conver to what btoa accepts.
-    // btoa accepts chars only within ascii 0-255 and base64 encodes them.
-    // Then convert the base64 encoded to base64url encoded
-    //   (replace + with -, replace / with _, trim trailing =)
-    let based = btoa(str)
-    let trimmed = based.replace(/=+$/, '')
-    let urled = trimmed.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
     return urled
 }
 
@@ -180,7 +174,7 @@ function pkceChallengeFromVerifier(v) {
     hash.update(v)
     let hashed = hash.array()
     let stringed = String.fromCharCode.apply(null, hashed)
-    let challenge = base64urlencode(hashed)
+    let challenge = base64urlencode(stringed)
     return challenge
 }
 

@@ -106,10 +106,11 @@ const saveLoginResults = function(results) {
   localStorage.setItem('access_token_expired_ms', Date.now() + results.expires_in  * 1000)
 }
 
-const eraseLoginResults = function() {
+const clearLoginResults = function() {
   // TODO: save other important data
-  localStorage.setItem('access_token', null)
-  localStorage.setItem('refresh_token', null)
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+  localStorage.removeItem('access_token_expired_ms')
 }
 
 const isLoggedIn = function() {
@@ -184,6 +185,11 @@ function pkceChallengeFromVerifier(v) {
     return challenge
 }
 
+const logout = function () {
+  clearLoginResults()
+  resetNavbar()
+}
+
 $(document).ready(function() {
   $(window).on('popstate', function(event) {
     if (event && event.originalEvent && event.originalEvent.state && event.originalEvent.state.key) {
@@ -196,6 +202,7 @@ $(document).ready(function() {
   $('#navbar-brand').click(goHome)
   $('#navbar-home').click(goHome)
   $('#navbar-login').click(startLogin)
+  $('#navbar-login').click(logout)
   resetNavbar()
   $('#navbar-search').autoComplete({
     resolver: 'custom',

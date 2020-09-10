@@ -17,8 +17,25 @@ const routes = [
   [new RegExp('^/callback$'), function(match) { endLogin() }],
 ]
 
+const ajax = function(args) {
+  ensureToken(function(token) {
+    if (token) {
+      args.headers = (args.headers) ? args.headers : {}
+      args.headers['Authorization'] = `Bearer ${token}`
+    }
+    $.ajax(args)
+  })
+}
+
+const ensureToken = function(callback) {
+  let results = getLoginResults()
+  // TODO: refresh if needed
+  callback(results.access_token)
+}
+
 const fetchPage = function(pageTitle) {
-  $.get({
+  ajax({
+    method: 'GET'
     url: `${root}page/${pageTitle}/with_html`,
     success: function(page) {
       $('#page-title').text(page.title)
@@ -33,7 +50,8 @@ const fetchPage = function(pageTitle) {
         fetchPage(title)
         return false
       })
-    }})
+    }
+  })
 }
 
 const noSuchRoute = function(pathname) {
@@ -86,6 +104,7 @@ const endLogin = function() {
     client_id: clientID,
     code_verifier: pkce.codeVerifier
   }
+  // We don't want to use a token for this
   $.post({
     url: token,
     dataType: "json",
@@ -111,6 +130,14 @@ const clearLoginResults = function() {
   localStorage.removeItem('access_token')
   localStorage.removeItem('refresh_token')
   localStorage.removeItem('access_token_expired_ms')
+}
+
+const getLoginResults = function() {
+  results = {
+    access_token: localStorage.getItem('access_token'),
+    refresh_token: localStorage.getItem('refresh_token'),
+    access_token_expired_ms: localStorage.getItem('access_token_expired_ms')
+  }
 }
 
 const isLoggedIn = function() {
@@ -208,15 +235,15 @@ $(document).ready(function() {
     resolver: 'custom',
     events: {
       search: function (qry, callback) {
-        // let's do a custom ajax call
-        $.get(
-          `${root}search/title`,
-          {'q': qry},
-          function(results) {
+        ajax({
+          method: 'GET',
+          url: `${root}search/title`,
+          data: {'q': qry},
+          success: function(results) {
             let searchFormat = results.pages.map((page) => page.title)
             callback(searchFormat)
           }
-        )
+        })
       }
     }
   });

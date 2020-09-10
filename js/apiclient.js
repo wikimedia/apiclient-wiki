@@ -202,7 +202,7 @@ $(document).ready(function() {
   $('#navbar-brand').click(goHome)
   $('#navbar-home').click(goHome)
   $('#navbar-login').click(startLogin)
-  $('#navbar-login').click(logout)
+  $('#navbar-logout').click(logout)
   resetNavbar()
   $('#navbar-search').autoComplete({
     resolver: 'custom',

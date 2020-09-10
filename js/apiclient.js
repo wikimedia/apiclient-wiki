@@ -17,8 +17,25 @@ const routes = [
   [new RegExp('^/callback$'), function(match) { endLogin() }],
 ]
 
+const ajax = function(args) {
+  ensureToken(function(token) {
+    if (token) {
+      args.headers = (args.headers) ? args.headers : {}
+      args.headers['Authorization'] = `Bearer ${token}`
+    }
+    $.ajax(args)
+  })
+}
+
+const ensureToken = function(callback) {
+  let results = getLoginResults()
+  // TODO: refresh if needed
+  callback(results.access_token)
+}
+
 const fetchPage = function(pageTitle) {
-  $.get({
+  ajax({
+    method: 'GET',
     url: `${root}page/${pageTitle}/with_html`,
     success: function(page) {
       $('#page-title').text(page.title)
@@ -33,7 +50,8 @@ const fetchPage = function(pageTitle) {
         fetchPage(title)
         return false
       })
-    }})
+    }
+  })
 }
 
 const noSuchRoute = function(pathname) {
@@ -86,6 +104,7 @@ const endLogin = function() {
     client_id: clientID,
     code_verifier: pkce.codeVerifier
   }
+  // We don't want to use a token for this
   $.post({
     url: token,
     dataType: "json",
@@ -106,10 +125,19 @@ const saveLoginResults = function(results) {
   localStorage.setItem('access_token_expired_ms', Date.now() + results.expires_in  * 1000)
 }
 
-const eraseLoginResults = function() {
+const clearLoginResults = function() {
   // TODO: save other important data
-  localStorage.setItem('access_token', null)
-  localStorage.setItem('refresh_token', null)
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+  localStorage.removeItem('access_token_expired_ms')
+}
+
+const getLoginResults = function() {
+  return {
+    access_token: localStorage.getItem('access_token'),
+    refresh_token: localStorage.getItem('refresh_token'),
+    access_token_expired_ms: localStorage.getItem('access_token_expired_ms')
+  }
 }
 
 const isLoggedIn = function() {
@@ -184,6 +212,11 @@ function pkceChallengeFromVerifier(v) {
     return challenge
 }
 
+const logout = function () {
+  clearLoginResults()
+  resetNavbar()
+}
+
 $(document).ready(function() {
   $(window).on('popstate', function(event) {
     if (event && event.originalEvent && event.originalEvent.state && event.originalEvent.state.key) {
@@ -196,20 +229,21 @@ $(document).ready(function() {
   $('#navbar-brand').click(goHome)
   $('#navbar-home').click(goHome)
   $('#navbar-login').click(startLogin)
+  $('#navbar-logout').click(logout)
   resetNavbar()
   $('#navbar-search').autoComplete({
     resolver: 'custom',
     events: {
       search: function (qry, callback) {
-        // let's do a custom ajax call
-        $.get(
-          `${root}search/title`,
-          {'q': qry},
-          function(results) {
+        ajax({
+          method: 'GET',
+          url: `${root}search/title`,
+          data: {'q': qry},
+          success: function(results) {
             let searchFormat = results.pages.map((page) => page.title)
             callback(searchFormat)
           }
-        )
+        })
       }
     }
   });

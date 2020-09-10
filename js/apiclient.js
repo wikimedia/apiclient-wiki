@@ -35,7 +35,7 @@ const ensureToken = function(callback) {
 
 const fetchPage = function(pageTitle) {
   ajax({
-    method: 'GET'
+    method: 'GET',
     url: `${root}page/${pageTitle}/with_html`,
     success: function(page) {
       $('#page-title').text(page.title)

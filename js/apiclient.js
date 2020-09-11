@@ -23,6 +23,11 @@ const ajax = function(args) {
       args.headers = (args.headers) ? args.headers : {}
       args.headers['Authorization'] = `Bearer ${token}`
     }
+    if (!args.error) {
+      args.error = function(jqXHR, textStatus, errorThrown) {
+          showError(`Error calling ${args.url}: ${errorThrown}`)
+      }
+    }
     $.ajax(args)
   })
 }
@@ -47,11 +52,28 @@ const ensureToken = function(callback) {
       success: function(newResults) {
         saveLoginResults(newResults)
         callback(newResults.access_token)
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        showError(`Error getting OAuth 2.0 refresh token: ${errorThrown}`)
       }
     })
   } else {
     callback(results.access_token)
   }
+}
+
+var timer = null
+
+const showError(text) {
+  if (timer) {
+    clearTimeout(timer)
+    timer = null
+  }
+  $("#main-alert").addClass('visible').removeClass('invisible').text(text)
+  timer = setTimeout(function() {
+    $("#main-alert").addClass('invisible').removeClass('visible').text('')
+    timer = null
+  }, 10000)
 }
 
 const fetchPage = function(pageTitle) {
@@ -71,6 +93,9 @@ const fetchPage = function(pageTitle) {
         fetchPage(title)
         return false
       })
+    },
+    error: function(xhr, status, text) {
+      showError(`error getting page ${pageTitle}: ${text}`)
     }
   })
 }
@@ -134,6 +159,9 @@ const endLogin = function() {
       saveLoginResults(results)
       resetNavbar()
       routeTo(state)
+    },
+    error: function(xhr, status, text) {
+      showError(`Error finishing authorization: ${text}`)
     }
   })
 }
@@ -263,6 +291,9 @@ $(document).ready(function() {
           success: function(results) {
             let searchFormat = results.pages.map((page) => page.title)
             callback(searchFormat)
+          },
+          error: function(xhr, status, text) {
+            showError(`Error searching for ${qry}: ${text}`)
           }
         })
       }

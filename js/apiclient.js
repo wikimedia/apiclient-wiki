@@ -204,7 +204,7 @@ const getAccessToken = function() {
 const getProfile = function(callback) {
   ajax({
     url: profileurl,
-    success: callback
+    success: callback,
     error: function() {
       // Just continue
       callback(null)

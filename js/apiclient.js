@@ -266,6 +266,14 @@ $(document).ready(function() {
     }
   });
 
+  $('#navbar-search').on('autocomplete.select', function (evt, item) {
+    routeTo(`/page/${item}`)
+  });
+
+  $('#navbar-search').on('autocomplete.freevalue', function (evt, value) {
+    routeTo(`/search?q=${encodeURI(value)}`)
+  });
+
   let path = getPath()
   routeTo(path)
 })

@@ -29,8 +29,26 @@ const ajax = function(args) {
 
 const ensureToken = function(callback) {
   let results = getLoginResults()
-  // TODO: refresh if needed
-  callback(results.access_token)
+  if (results.access_token_expired_ms >= Date.now()) {
+    let data = {
+      grant_type: "refresh_token",
+      refresh_token: results.refresh_token,
+      redirect_uri: `${server}callback`,
+      client_id: clientID
+    }
+    // We don't want to use access_token for this
+    $.post({
+      url: token,
+      dataType: "json",
+      data: data,
+      success: function(newResults) {
+        saveLoginResults(newResults)
+        callback(newResults.access_token)
+      }
+    })
+  } else {
+    callback(results.access_token)
+  }
 }
 
 const fetchPage = function(pageTitle) {
@@ -110,7 +128,6 @@ const endLogin = function() {
     dataType: "json",
     data: data,
     success: function(results) {
-      clearPKCE()
       saveLoginResults(results)
       resetNavbar()
       routeTo(state)
@@ -214,6 +231,7 @@ function pkceChallengeFromVerifier(v) {
 
 const logout = function () {
   clearLoginResults()
+  clearPKCE()
   resetNavbar()
 }
 

@@ -6,7 +6,7 @@ const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
 const authorize = 'https://meta.wikimedia.org/w/rest.php/oauth2/authorize'
 const token = 'https://meta.wikimedia.org/w/rest.php/oauth2/access_token'
 const server = 'https://apiclient.wiki/'
-
+const profileurl = 'https://meta.wikimedia.org/w/rest.php/oauth2/resource/profile'
 const clientID = "6ac53a07b581e30e47664cd9e8f3d0e4"
 
 const routes = [
@@ -157,8 +157,13 @@ const endLogin = function() {
     data: data,
     success: function(results) {
       saveLoginResults(results)
-      resetNavbar()
-      routeTo(state)
+      getProfile(function(profile) {
+        if (profile) {
+          saveProfile(profile)
+        }
+        resetNavbar()
+        routeTo(state)
+      })
     },
     error: function(xhr, status, text) {
       showError(`Error finishing authorization: ${text}`)
@@ -196,8 +201,36 @@ const getAccessToken = function() {
   return localStorage.getItem('access_token')
 }
 
+const getProfile = function(callback) {
+  ajax({
+    url: profileurl,
+    success: callback
+    error: function() {
+      // Just continue
+      callback(null)
+    }
+  })
+}
+
+const loadProfile = function() {
+  let profile = {
+    username: localStorage.getItem('username')
+  }
+  return profile
+}
+
+const saveProfile = function(profile) {
+  localStorage.setItem('username', profile.username)
+}
+
+const clearProfile = function() {
+  localStorage.removeItem('username')
+}
+
 const resetNavbar = function() {
   if (isLoggedIn()) {
+    let profile = loadProfile()
+    $("#navbar-aboutme").text(profile.username)
     $("#navbar-aboutme").removeClass("invisible").addClass("visible")
     $("#navbar-logout").removeClass("invisible").addClass("visible")
     $("#navbar-login").removeClass("visible").addClass("invisible")

@@ -170,7 +170,7 @@ const saveLoginResults = function(results) {
   // TODO: save other important data
   localStorage.setItem('access_token', results.access_token)
   localStorage.setItem('refresh_token', results.refresh_token)
-  localStorage.setItem('access_token_expired_ms', Date.now() + results.expires_in  * 1000)
+  localStorage.setItem('access_token_expired_ms', String.toString(Date.now() + results.expires_in  * 1000))
 }
 
 const clearLoginResults = function() {
@@ -184,7 +184,7 @@ const getLoginResults = function() {
   return {
     access_token: localStorage.getItem('access_token'),
     refresh_token: localStorage.getItem('refresh_token'),
-    access_token_expired_ms: parseInt(localStorage.getItem('access_token_expired_ms'))
+    access_token_expired_ms: parseFloat(localStorage.getItem('access_token_expired_ms'))
   }
 }
 

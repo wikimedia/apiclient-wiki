@@ -29,12 +29,15 @@ const ajax = function(args) {
 
 const ensureToken = function(callback) {
   let results = getLoginResults()
-  if (results.access_token_expired_ms >= Date.now()) {
+  // Are we past the expiry date?
+  if (Date.now() > results.access_token_expired_ms) {
+    let pkce = loadPKCE()
     let data = {
       grant_type: "refresh_token",
       refresh_token: results.refresh_token,
       redirect_uri: `${server}callback`,
-      client_id: clientID
+      client_id: clientID,
+      code_verifier: pkce.code_verifier
     }
     // We don't want to use access_token for this
     $.post({

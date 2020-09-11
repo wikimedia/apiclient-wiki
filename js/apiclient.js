@@ -2,6 +2,8 @@
 // MIT Public License
 // https://github.com/aaronpk/pkce-vanilla-js
 
+/*global $ */
+
 const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
 const authorize = 'https://meta.wikimedia.org/w/rest.php/oauth2/authorize'
 const token = 'https://meta.wikimedia.org/w/rest.php/oauth2/access_token'
@@ -10,11 +12,11 @@ const profileurl = 'https://meta.wikimedia.org/w/rest.php/oauth2/resource/profil
 const clientID = "6ac53a07b581e30e47664cd9e8f3d0e4"
 
 const routes = [
-  [new RegExp('^/$'), function(match) { fetchPage('Main Page')}],
-  [new RegExp('^/index$'), function(match) { fetchPage('Main Page')}],
-  [new RegExp('^/index.html$'), function(match) { fetchPage('Main Page')}],
+  [new RegExp('^/$'), function() { fetchPage('Main Page')}],
+  [new RegExp('^/index$'), function() { fetchPage('Main Page')}],
+  [new RegExp('^/index.html$'), function() { fetchPage('Main Page')}],
   [new RegExp('^/page/(.*)$'), function(match) { fetchPage(match[1]) }],
-  [new RegExp('^/callback$'), function(match) { endLogin() }],
+  [new RegExp('^/callback$'), function() { endLogin() }],
 ]
 
 const ajax = function(args) {
@@ -268,10 +270,12 @@ const loadPKCE = function() {
   return pkce
 }
 
-const clearPKCE = function(pkce) {
+const clearPKCE = function() {
   localStorage.removeItem("pkce_state")
   localStorage.removeItem("pkce_code_verifier")
 }
+
+/* global Uint32Array */
 
 const generateRandomString = function() {
   var array = new Uint32Array(28)
@@ -284,6 +288,8 @@ function base64urlencode(str) {
     return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 
+/* global sha256 */
+
 function pkceChallengeFromVerifier(v) {
     let hash = sha256.create()
     hash.update(v)
@@ -295,6 +301,7 @@ function pkceChallengeFromVerifier(v) {
 
 const logout = function () {
   clearLoginResults()
+  clearProfile()
   clearPKCE()
   resetNavbar()
 }

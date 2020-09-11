@@ -64,7 +64,7 @@ const ensureToken = function(callback) {
 
 var timer = null
 
-const showError(text) {
+const showError = function(text) {
   if (timer) {
     clearTimeout(timer)
     timer = null

@@ -17,6 +17,7 @@ const routes = [
   [new RegExp('^/index.html$'), function() { fetchPage('Main Page')}],
   [new RegExp('^/page/(.*)$'), function(match) { fetchPage(match[1]) }],
   [new RegExp('^/callback$'), function() { endLogin() }],
+  [new RegExp('^/search$'), function(match, args) { search(args) }]
 ]
 
 const ajax = function(args) {
@@ -107,12 +108,12 @@ const noSuchRoute = function(pathname) {
   $('#page-content').text(`No such page ${pathname}`)
 }
 
-const routeTo = function(pathname) {
+const routeTo = function(pathname, args) {
   for (let route of routes) {
     let [re, handler] = route
     let m = pathname.match(re)
     if (m) {
-      handler(m)
+      handler(m, args)
       return
     }
   }
@@ -247,6 +248,10 @@ const getPath = function() {
   return document.location.pathname
 }
 
+const getQuery = function() {
+  return document.location.search
+}
+
 const makePKCE = function() {
   let pkce = {
     state: generateRandomString(),
@@ -306,6 +311,24 @@ const logout = function () {
   resetNavbar()
 }
 
+const search = function(args) {
+  let q = args.q
+  if (!q) {
+    showError(`No 'q' parameter for search.`)
+    return
+  } else {
+    ajax({
+      method: "GET",
+      url: `${root}search/page`,
+      data: {q: q},
+      success: function(results) {
+        $("#page-title").text(`Search results for ${q}`)
+        $("#page-content").html(results.pages)
+      }
+    })
+  }
+}
+
 $(document).ready(function() {
   $(window).on('popstate', function(event) {
     if (event && event.originalEvent && event.originalEvent.state && event.originalEvent.state.key) {
@@ -345,9 +368,10 @@ $(document).ready(function() {
   });
 
   $('#navbar-search').on('autocomplete.freevalue', function (evt, value) {
-    routeTo(`/search?q=${encodeURI(value)}`)
+    routeTo(`/search`, {q: value})
   });
 
   let path = getPath()
-  routeTo(path)
+  let query = getQuery()
+  routeTo(path, query)
 })

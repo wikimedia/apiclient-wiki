@@ -156,7 +156,7 @@ const getLoginResults = function() {
   return {
     access_token: localStorage.getItem('access_token'),
     refresh_token: localStorage.getItem('refresh_token'),
-    access_token_expired_ms: localStorage.getItem('access_token_expired_ms')
+    access_token_expired_ms: parseInt(localStorage.getItem('access_token_expired_ms'))
   }
 }
 

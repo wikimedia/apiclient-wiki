@@ -37,7 +37,7 @@ const ensureToken = function(callback) {
       refresh_token: results.refresh_token,
       redirect_uri: `${server}callback`,
       client_id: clientID,
-      code_verifier: pkce.code_verifier
+      code_verifier: pkce.codeVerifier
     }
     // We don't want to use access_token for this
     $.post({

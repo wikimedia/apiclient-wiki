@@ -388,7 +388,7 @@ $(document).ready(function() {
   });
 
   $('#navbar-search').on('autocomplete.freevalue', function (evt, value) {
-    routeTo(`/search`, new URLSearchParams(`/q=${value}`))
+    routeTo(`/search`, new URLSearchParams(`?q=${value}`))
   });
 
   let path = getPath()

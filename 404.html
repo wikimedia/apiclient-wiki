@@ -59,12 +59,12 @@
       <ul id="search-results-list" class="list-unstyled">
         {{#each pages}}
           <li class="media search-result" id="search-result-{{this.id}}">
-            <img src="{{this.thumbnail.url}}" class="align-self-start mr-3">
             <div class="media-body">
               <h5 class="mt-0"><a href="#" class="search-result-title">{{this.title}}</a></h5>
               <p class="search-result-description">{{this.description}}</p>
               <p class="search-result-excerpt">{{{this.excerpt}}}</p>
             </div>
+            <img src="{{this.thumbnail.url}}" class="align-self-start mr-3">
           </li>
         {{/each}}
       </ul>

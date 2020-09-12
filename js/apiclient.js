@@ -389,12 +389,6 @@ $(document).ready(function() {
     return false
   });
 
-  $('#navbar-search').on('autocomplete.freevalue', function (evt, value) {
-    event.preventDefault()
-    routeTo(`/search`, new URLSearchParams(`?q=${value}`))
-    return false
-  });
-
   $('#navbar-search-form').submit(function(event) {
     event.preventDefault()
     let value = $('#navbar-search').text()

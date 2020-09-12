@@ -324,7 +324,7 @@ const compileTemplate = function(id) {
 let searchTemplate = null
 
 const search = function(args) {
-  let q = args.q
+  let q = args.get('q')
   if (!q) {
     showError(`No 'q' parameter for search.`)
     return
@@ -385,7 +385,7 @@ $(document).ready(function() {
   });
 
   $('#navbar-search').on('autocomplete.freevalue', function (evt, value) {
-    routeTo(`/search`, {q: value})
+    routeTo(`/search`, new URLSearchParams(`/q=${value}`))
   });
 
   let path = getPath()

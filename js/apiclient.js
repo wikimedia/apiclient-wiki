@@ -331,12 +331,12 @@ const search = function(args) {
     showError(`No 'q' parameter for search.`)
     return
   } else {
+    $("#page-title").text(`Search results for ${q}`)
     ajax({
       method: "GET",
       url: `${root}search/page`,
       data: {q: q},
       success: function(results) {
-        $("#page-title").text(`Search results for ${q}`)
         if (!searchTemplate) {
           searchTemplate = compileTemplate('search-page')
         }

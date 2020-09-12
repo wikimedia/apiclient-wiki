@@ -92,17 +92,19 @@ const fetchPage = function(pageTitle) {
       let content = sections.map((el) => el.outerHTML).join("")
       $('#page-content').html(content)
       history.pushState({title: page.title, id: page.id, key: page.key}, page.key, `${server}page/${page.key}`)
-      $('a[rel="mw:WikiLink"]').click(function(event) {
-        event.preventDefault()
-        let title = $(this).attr('title')
-        fetchPage(title)
-        return false
-      })
+      $('a[rel="mw:WikiLink"]').click(goToTitle)
     },
     error: function(xhr, status, text) {
       showError(`error getting page ${pageTitle}: ${text}`)
     }
   })
+}
+
+const goToTitle = function(event) {
+  event.preventDefault()
+  let title = $(this).attr('title')
+  fetchPage(title)
+  return false
 }
 
 const noSuchRoute = function(pathname) {
@@ -340,6 +342,7 @@ const search = function(args) {
         }
         let contents = searchTemplate({pages: results.pages})
         $("#page-content").html(contents)
+        $(".search-result-title").click(goToTitle)
       }
     })
   }

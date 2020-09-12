@@ -2,7 +2,7 @@
 // MIT Public License
 // https://github.com/aaronpk/pkce-vanilla-js
 
-/*global $ */
+/*global $ Handlebars */
 
 const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
 const authorize = 'https://meta.wikimedia.org/w/rest.php/oauth2/authorize'
@@ -313,6 +313,14 @@ const logout = function () {
   resetNavbar()
 }
 
+const compileTemplate = function(id) {
+  let source = $(`#${id}`).text()
+  let template = Handlebars.compile(source)
+  return template
+}
+
+let searchTemplate = null
+
 const search = function(args) {
   let q = args.q
   if (!q) {
@@ -325,7 +333,11 @@ const search = function(args) {
       data: {q: q},
       success: function(results) {
         $("#page-title").text(`Search results for ${q}`)
-        $("#page-content").html(results.pages)
+        if (!searchTemplate) {
+          searchTemplate = compileTemplate('search-page')
+        }
+        let contents = searchTemplate({pages: results.pages})
+        $("#page-content").html(contents)
       }
     })
   }

@@ -7,6 +7,9 @@
       .infobox {
         float: right;
       }
+      span.search {
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -36,8 +39,8 @@
             </li>
           </ul>
 
-          <form class="form-inline my-2 my-lg-0">
-            <input id="navbar-search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <form class="form-inline my-2 my-lg-0" method="get" action="/search">
+            <input name="q" id="navbar-search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
         </div>
@@ -47,12 +50,27 @@
       <div id="page-content">
       </div>
     </div>
+    <script id="search-page" lang="mustache">
+      <ul id="search-results-list" class="list-unstyled">
+        {{#each pages}}
+          <li class="media search-result" id="search-result-{{this.id}}">
+            <img src="{{this.thumbnail.url}}" class="align-self-start mr-3">
+            <div class="media-body">
+              <h5 class="mt-0"><a href="#" class="search-result-title">{{this.title}}</a></h5>
+              <p class="search-result-description">{{this.description}}</p>
+              <p class="search-result-excerpt">{{{this.excerpt}}}</p>
+            </div>
+          </li>
+        {{/each}}
+      </ul>
+    </script>
     <script src="/client-id.txt" type="text/plain" id="client-id"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js" integrity="sha512-szJ5FSo9hEmXXe7b5AUVtn/WnL8a5VofnFeYC2i2z03uS2LhAch7ewNLbl5flsEmTTimMN0enBZg/3sQ+YOSzQ==" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
     <script src="https://apiclient.wiki/js/apiclient.js"></script>
   </body>
 </html>

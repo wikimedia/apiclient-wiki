@@ -384,11 +384,15 @@ $(document).ready(function() {
   });
 
   $('#navbar-search').on('autocomplete.select', function (evt, item) {
+    event.preventDefault()
     routeTo(`/page/${item}`)
+    return false
   });
 
   $('#navbar-search').on('autocomplete.freevalue', function (evt, value) {
+    event.preventDefault()
     routeTo(`/search`, new URLSearchParams(`?q=${value}`))
+    return false
   });
 
   let path = getPath()

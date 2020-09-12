@@ -333,6 +333,7 @@ const search = function(args) {
     showError(`No 'q' parameter for search.`)
     return
   } else {
+    history.pushState({q: q}, q, `${server}search?q=${q}`)
     $("#page-title").text(`Search results for ${q}`)
     $("#page-content").text(`Searching...`)
     ajax({
@@ -389,6 +390,12 @@ $(document).ready(function() {
   $('#navbar-search').on('autocomplete.select', function (evt, item) {
     event.preventDefault()
     routeTo(`/page/${item}`)
+    return false
+  });
+
+  $('#navbar-search').on('autocomplete.freevalue', function (evt, value) {
+    event.preventDefault()
+    routeTo(`/search`, new URLSearchParams(`?q=${value}`))
     return false
   });
 

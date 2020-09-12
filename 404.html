@@ -60,8 +60,10 @@
         {{#each pages}}
           <li class="media search-result" id="search-result-{{this.id}}">
             <div class="media-body">
-              <h5 class="mt-0"><a href="/page/{{this.key}}" class="search-result-title" title="{{this.title}}">{{this.title}}</a></h5>
-              <p class="search-result-description">{{this.description}}</p>
+              <h5 class="mt-0">
+                <a href="/page/{{this.key}}" class="search-result-title" title="{{this.title}}">{{this.title}}</a>
+                <small class="text-muted search-result-description">{{this.description}}</small>
+              </h5>
               <p class="search-result-excerpt">{{{this.excerpt}}}</p>
             </div>
             <img src="{{this.thumbnail.url}}" class="align-self-start mr-3">

@@ -332,6 +332,7 @@ const search = function(args) {
     return
   } else {
     $("#page-title").text(`Search results for ${q}`)
+    $("#page-content").text(`Searching...`)
     ajax({
       method: "GET",
       url: `${root}search/page`,

@@ -251,7 +251,7 @@ const getPath = function() {
 }
 
 const getQuery = function() {
-  return document.location.search
+  return (new URL(document.location)).searchParams
 }
 
 const makePKCE = function() {

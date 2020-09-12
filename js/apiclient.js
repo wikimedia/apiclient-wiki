@@ -395,6 +395,13 @@ $(document).ready(function() {
     return false
   });
 
+  $('#navbar-search-form').submit(function(event) {
+    event.preventDefault()
+    let value = $('#navbar-search').text()
+    routeTo(`/search`, new URLSearchParams(`?q=${value}`))
+    return false
+  })
+
   let path = getPath()
   let query = getQuery()
   routeTo(path, query)

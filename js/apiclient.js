@@ -332,8 +332,9 @@ const search = function(args) {
 $(document).ready(function() {
   $(window).on('popstate', function(event) {
     if (event && event.originalEvent && event.originalEvent.state && event.originalEvent.state.key) {
+      let key = event.originalEvent.state.key
       event.preventDefault()
-      fetchPage(event.originalEvent.state.key)
+      routeTo(`/page/${key}`)
       return false
     }
   })

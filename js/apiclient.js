@@ -120,8 +120,10 @@ const routeTo = function(pathname, args) {
   noSuchRoute(pathname)
 }
 
-const goHome = function() {
-  routeTo('/')
+const goHome = function(event) {
+  event.preventDefault()
+  routeTo('/page/Main_Page')
+  return false
 }
 
 const startLogin = function() {

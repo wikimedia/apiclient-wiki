@@ -82,6 +82,8 @@ const showError = function(text) {
 }
 
 const fetchPage = function(pageTitle) {
+  $('#page-title').text(pageTitle)
+  $('#page-content').text(`Loading...`)
   ajax({
     method: 'GET',
     url: `${root}page/${pageTitle}/with_html`,

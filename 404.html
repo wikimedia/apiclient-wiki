@@ -45,7 +45,12 @@
           </form>
         </div>
       </nav>
-      <div id="main-alert" class="alert alert-danger invisible" role="alert"></div>
+      <div id="main-alert" class="alert alert-danger alert-dismissable invisible" role="alert">
+        <span id="main-alert-text"></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <h1 id="page-title">Main Page</h1>
       <div id="page-content">
       </div>

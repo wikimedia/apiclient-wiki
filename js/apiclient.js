@@ -72,9 +72,11 @@ const showError = function(text) {
     clearTimeout(timer)
     timer = null
   }
-  $("#main-alert").addClass('visible').removeClass('invisible').text(text)
+  $("#main-alert").addClass('visible').removeClass('invisible')
+  $("#main-alert-text").text(text)
   timer = setTimeout(function() {
-    $("#main-alert").addClass('invisible').removeClass('visible').text('')
+    $("#main-alert").addClass('invisible').removeClass('visible')
+    $("#main-alert-text").text('')
     timer = null
   }, 10000)
 }

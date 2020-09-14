@@ -84,9 +84,10 @@ const showError = function(text) {
 const fetchPage = function(pageTitle) {
   $('#page-title').text(pageTitle)
   $('#page-content').text(`Loading...`)
+  let pageTitleURL = pageTitle.replace(/\\/, '%2F').replace(/\./, '%2E')
   ajax({
     method: 'GET',
-    url: `${root}page/${pageTitle}/with_html`,
+    url: `${root}page/${pageTitleURL}/with_html`,
     success: function(page) {
       $('#page-title').text(page.title)
       let elements = $.parseHTML(page.html)

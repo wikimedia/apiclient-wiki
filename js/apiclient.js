@@ -4,12 +4,21 @@
 
 /*global $ Handlebars */
 
-const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
-const authorize = 'https://meta.wikimedia.org/w/rest.php/oauth2/authorize'
-const token = 'https://meta.wikimedia.org/w/rest.php/oauth2/access_token'
+// Particular to this app. Change if you fork!
+
 const server = 'https://apiclient.wiki/'
-const profileurl = 'https://meta.wikimedia.org/w/rest.php/oauth2/resource/profile'
 const clientID = "6ac53a07b581e30e47664cd9e8f3d0e4"
+
+// OAuth routes
+
+const authroot = `https://meta.wikimedia.org/w/rest.php`
+const authorize = `${authroot}/oauth2/authorize`
+const token = `${authroot}/oauth2/access_token`
+const profileurl = `${authroot}//oauth2/resource/profile`
+
+// API root
+
+const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
 
 const routes = [
   [new RegExp('^/$'), function() { fetchPage('Main Page')}],

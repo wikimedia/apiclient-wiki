@@ -350,8 +350,7 @@ const search = function(args) {
     return
   } else {
     history.pushState({q: q}, q, `${server}search?q=${q}`)
-    $("#page-title").text(`Search results for ${q}`)
-    $("#page-content").text(`Searching...`)
+    showLoading(`Search results for ${q}`)
     ajax({
       method: "GET",
       url: `${root}search/page`,
@@ -359,7 +358,7 @@ const search = function(args) {
       success: function(results) {
         let searchTemplate = getTemplate('search-page')
         let contents = searchTemplate({pages: results.pages, q: q})
-        $("#content").html(contents)
+        setContent(contents)
         $(".search-result-title").click(goToTitle)
       }
     })

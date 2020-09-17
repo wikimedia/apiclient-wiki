@@ -12,10 +12,10 @@ const profileurl = 'https://meta.wikimedia.org/w/rest.php/oauth2/resource/profil
 const clientID = "6ac53a07b581e30e47664cd9e8f3d0e4"
 
 const routes = [
-  [new RegExp('^/$'), function() { fetchPage('Main Page')}],
-  [new RegExp('^/index$'), function() { fetchPage('Main Page')}],
-  [new RegExp('^/index.html$'), function() { fetchPage('Main Page')}],
-  [new RegExp('^/page/(.*)$'), function(match) { fetchPage(match[1]) }],
+  [new RegExp('^/$'), function() { showPage('Main Page')}],
+  [new RegExp('^/index$'), function() { showPage('Main Page')}],
+  [new RegExp('^/index.html$'), function() { showPage('Main Page')}],
+  [new RegExp('^/page/(.*)$'), function(match) { showPage(match[1]) }],
   [new RegExp('^/callback$'), function() { endLogin() }],
   [new RegExp('^/search$'), function(match, args) { search(args) }]
 ]
@@ -81,19 +81,27 @@ const showError = function(text) {
   }, 10000)
 }
 
-const fetchPage = function(pageTitle) {
-  $('#page-title').text(pageTitle)
-  $('#page-content').text(`Loading...`)
+const setContent = function(html) {
+  $('#content').html(html)
+}
+
+const showLoading = function(title) {
+  const template = getTemplate('loading')
+  setContent(template({title: title}))
+}
+
+const showPage = function(pageTitle) {
+  showLoading(pageTitle)
   let pageTitleURL = pageTitle.replace(/\\/, '%2F').replace(/\./, '%2E')
   ajax({
     method: 'GET',
     url: `${root}page/${pageTitleURL}/with_html`,
     success: function(page) {
-      $('#page-title').text(page.title)
       let elements = $.parseHTML(page.html)
       let sections = elements.filter((el) => el.tagName == "SECTION")
       let content = sections.map((el) => el.outerHTML).join("")
-      $('#page-content').html(content)
+      let template = getTemplate('show-page')
+      setContent(template({page: page, content: content}))
       history.pushState({title: page.title, id: page.id, key: page.key}, page.key, `${server}page/${page.key}`)
       $('a[rel="mw:WikiLink"]').click(goToTitle)
     },
@@ -106,7 +114,7 @@ const fetchPage = function(pageTitle) {
 const goToTitle = function(event) {
   event.preventDefault()
   let title = $(this).attr('title')
-  fetchPage(title)
+  showPage(title)
   return false
 }
 
@@ -320,13 +328,20 @@ const logout = function () {
   resetNavbar()
 }
 
+const templates = {}
+
+const getTemplate = function(id) {
+  if (!(id in templates)) {
+    templates[id] = compileTemplate(id)
+  }
+  return templates[id]
+}
+
 const compileTemplate = function(id) {
   let source = $(`#${id}`).text()
   let template = Handlebars.compile(source)
   return template
 }
-
-let searchTemplate = null
 
 const search = function(args) {
   let q = args.get('q')
@@ -342,11 +357,9 @@ const search = function(args) {
       url: `${root}search/page`,
       data: {q: q},
       success: function(results) {
-        if (!searchTemplate) {
-          searchTemplate = compileTemplate('search-page')
-        }
-        let contents = searchTemplate({pages: results.pages})
-        $("#page-content").html(contents)
+        let searchTemplate = getTemplate('search-page')
+        let contents = searchTemplate({pages: results.pages, q: q})
+        $("#content").html(contents)
         $(".search-result-title").click(goToTitle)
       }
     })

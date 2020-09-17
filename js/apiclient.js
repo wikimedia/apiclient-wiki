@@ -100,7 +100,7 @@ const showPage = function(pageTitle) {
       let elements = $.parseHTML(page.html)
       let sections = elements.filter((el) => el.tagName == "SECTION")
       let content = sections.map((el) => el.outerHTML).join("")
-      let template = getTemplate('show-page')
+      let template = getTemplate('page')
       setContent(template({page: page, content: content}))
       history.pushState({title: page.title, id: page.id, key: page.key}, page.key, `${server}page/${page.key}`)
       $('a[rel="mw:WikiLink"]').click(goToTitle)
@@ -356,7 +356,7 @@ const search = function(args) {
       url: `${root}search/page`,
       data: {q: q},
       success: function(results) {
-        let searchTemplate = getTemplate('search-page')
+        let searchTemplate = getTemplate('search')
         let contents = searchTemplate({pages: results.pages, q: q})
         setContent(contents)
         $(".search-result-title").click(goToTitle)

@@ -59,6 +59,9 @@
     </div>
     <script id="page" lang="mustache">
       <h1 id="page-title">{{page.title}}</h1>
+      <nav class="navbar">
+        <a class="nav-link visible" href="/edit?title={{page.title}}" id="edit-page" data-title="{{page.title}}">Edit</a>
+      </nav>
       <div id="page-content">{{{content}}}</div>
     </script>
     <script id="edit" lang="mustache">
@@ -69,7 +72,7 @@
         <textarea class="form-control">
         {{page.source}}
         </textarea>
-        <label for="comment">Comment:</label> <input class="form-control" name="comment" id="comment" size="80" placeholder="Comment" aria-label="Search"></input>
+        <label for="comment">Comment:</label> <input class="form-control" name="comment" id="comment" size="80" placeholder="Comment" aria-label="Comment"></input>
         <input type="submit" name="submit" id="submit" ></input>
       </div>
     </script>

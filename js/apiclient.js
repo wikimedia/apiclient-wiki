@@ -108,7 +108,7 @@ const showPage = function(pageTitle) {
       $('#edit-page').click(function(event) {
         event.preventDefault()
         let title = $(this).data('title')
-        routeTo(`/edit?title=${title}`)
+        routeTo(`/edit`, new URLSearchParams(`?title=${title}`))
         return false
       })
     },
@@ -125,9 +125,10 @@ const goToTitle = function(event) {
   return false
 }
 
-const noSuchRoute = function(pathname) {
-  $('#page-title').text("<No such page>")
-  $('#page-content').text(`No such page ${pathname}`)
+const noSuchRoute = function(route) {
+  const noSuchRouteTemplate = getTemplate('no-such-route')
+  const contents = noSuchRouteTemplate({route: route})
+  setContent(contents)
 }
 
 const routeTo = function(pathname, args) {

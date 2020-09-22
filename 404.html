@@ -59,7 +59,19 @@
     </div>
     <script id="page" lang="mustache">
       <h1 id="page-title">{{page.title}}</h1>
-      <div id="page-content">{{content}}</div>
+      <div id="page-content">{{{content}}}</div>
+    </script>
+    <script id="edit" lang="mustache">
+      <h1 id="page-title">Editing {{page.title}}</h1>
+      <div id="page-content">
+      <form id="edit-page-form">
+        <input type="hidden" name="latest" value="{page.latest.id}"></input>
+        <textarea class="form-control">
+        {{page.source}}
+        </textarea>
+        <label for="comment">Comment:</label> <input class="form-control" name="comment" id="comment" size="80"></input>
+        <input type="submit" name="submit" id="submit"></input>
+      </div>
     </script>
     <script id="loading" lang="mustache">
       <h1 id="page-title">{{title}}</h1>

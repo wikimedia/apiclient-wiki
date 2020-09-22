@@ -17,7 +17,8 @@ const routes = [
   [new RegExp('^/index.html$'), function() { showPage('Main Page')}],
   [new RegExp('^/page/(.*)$'), function(match) { showPage(match[1]) }],
   [new RegExp('^/callback$'), function() { endLogin() }],
-  [new RegExp('^/search$'), function(match, args) { search(args) }]
+  [new RegExp('^/search$'), function(match, args) { search(args) }],
+  [new RegExp('^/edit$'), function(match, args) { edit(args) }]
 ]
 
 const ajax = function(args) {
@@ -363,6 +364,30 @@ const search = function(args) {
       }
     })
   }
+}
+
+const edit = function(args) {
+  let title = args.get('title')
+
+  if (!title) {
+    showError(`No 'title' parameter for editor.`)
+    return
+  }
+
+  showLoading(`Editing ${title}`)
+
+  let pageTitleURL = title.replace(/\\/, '%2F').replace(/\./, '%2E')
+
+  ajax({
+    method: 'GET',
+    url: `${root}page/${pageTitleURL}`,
+    success: function(page) {
+      let editTemplate = getTemplate('edit')
+      let contents = editTemplate({page: page})
+      setContent(contents)
+    }
+  })
+
 }
 
 $(document).ready(function() {

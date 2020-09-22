@@ -105,6 +105,12 @@ const showPage = function(pageTitle) {
       setContent(template({page: page, content: content}))
       history.pushState({title: page.title, id: page.id, key: page.key}, page.key, `${server}page/${page.key}`)
       $('a[rel="mw:WikiLink"]').click(goToTitle)
+      $('#edit-page').click(function(event) {
+        event.preventDefault()
+        let title = $(this).data('title')
+        routeTo(`/edit?title=${title}`)
+        return false
+      })
     },
     error: function(xhr, status, text) {
       showError(`error getting page ${pageTitle}: ${text}`)

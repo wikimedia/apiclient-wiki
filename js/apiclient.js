@@ -243,7 +243,7 @@ const getProfile = function(callback) {
     url: profileurl,
     success: function(profile) {
       // workaround: this endpoint sometimes returns text/html instead of application/json
-      if (String.isString(profile)) {
+      if (typeof(profile) == "string") {
         profile = JSON.parse(profile)
       }
       callback(profile)

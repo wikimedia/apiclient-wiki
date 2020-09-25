@@ -51,27 +51,58 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <h1 id="page-title">Main Page</h1>
-      <div id="page-content">
+      <div class="container" id="content">
+        <h1 id="page-title">Main Page</h1>
+        <div id="page-content">
+        </div>
       </div>
     </div>
-    <script id="search-page" lang="mustache">
-      <ul id="search-results-list" class="list-unstyled">
-        {{#each pages}}
-          <li class="media search-result" id="search-result-{{this.id}}">
-            <div class="media-body">
-              <h5 class="mt-0">
-                <a href="/page/{{this.key}}" class="search-result-title" title="{{this.title}}">{{this.title}}</a>
-                <small class="text-muted search-result-description">{{this.description}}</small>
-              </h5>
-              <p class="search-result-excerpt">{{{this.excerpt}}}</p>
-            </div>
-            <img src="{{this.thumbnail.url}}" class="align-self-start mr-3">
-          </li>
-        {{/each}}
-      </ul>
+    <script id="page" lang="mustache">
+      <h1 id="page-title">{{page.title}}</h1>
+      <nav class="navbar">
+        <a class="nav-link visible" href="/edit?title={{page.title}}" id="edit-page" data-title="{{page.title}}">Edit</a>
+      </nav>
+      <div id="page-content">{{{content}}}</div>
     </script>
-    <script src="/client-id.txt" type="text/plain" id="client-id"></script>
+    <script id="edit" lang="mustache">
+      <h1 id="page-title">Editing {{page.title}}</h1>
+      <div id="page-content">
+      <form id="edit-page-form">
+        <input type="hidden" name="latest" value="{page.latest.id}"></input>
+        <textarea class="form-control" rows='20'>
+        {{page.source}}
+        </textarea>
+        <label for="comment">Comment:</label> <input class="form-control" name="comment" id="comment" size="80" placeholder="Comment" aria-label="Comment"></input>
+        <input type="submit" name="submit" id="submit" ></input>
+      </div>
+    </script>
+    <script id="loading" lang="mustache">
+      <h1 id="page-title">{{title}}</h1>
+      <div id="page-content">Loading...</div>
+    </script>
+    <script id="no-such-route" lang="mustache">
+      <h1 id="page-title">No such route</h1>
+      <div id="page-content">No such route &quot;{{route}}&quot;</div>
+    </script>
+    <script id="search" lang="mustache">
+      <h1 id="page-title">Search results for '{{q}}'</h1>
+      <div id="page-content">
+        <ul id="search-results-list" class="list-unstyled">
+          {{#each pages}}
+            <li class="media search-result" id="search-result-{{this.id}}">
+              <div class="media-body">
+                <h5 class="mt-0">
+                  <a href="/page/{{this.key}}" class="search-result-title" title="{{this.title}}">{{this.title}}</a>
+                  <small class="text-muted search-result-description">{{this.description}}</small>
+                </h5>
+                <p class="search-result-excerpt">{{{this.excerpt}}}</p>
+              </div>
+              <img src="{{this.thumbnail.url}}" class="align-self-start mr-3">
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

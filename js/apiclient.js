@@ -21,12 +21,13 @@ const profileurl = `${authroot}//oauth2/resource/profile`
 const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
 
 const routes = [
-  [new RegExp('^/$'), function() { fetchPage('Main Page')}],
-  [new RegExp('^/index$'), function() { fetchPage('Main Page')}],
-  [new RegExp('^/index.html$'), function() { fetchPage('Main Page')}],
-  [new RegExp('^/page/(.*)$'), function(match) { fetchPage(match[1]) }],
+  [new RegExp('^/$'), function() { showPage('Main Page')}],
+  [new RegExp('^/index$'), function() { showPage('Main Page')}],
+  [new RegExp('^/index.html$'), function() { showPage('Main Page')}],
+  [new RegExp('^/page/(.*)$'), function(match) { showPage(match[1]) }],
   [new RegExp('^/callback$'), function() { endLogin() }],
-  [new RegExp('^/search$'), function(match, args) { search(args) }]
+  [new RegExp('^/search$'), function(match, args) { search(args) }],
+  [new RegExp('^/edit$'), function(match, args) { edit(args) }]
 ]
 
 const ajax = function(args) {
@@ -90,21 +91,35 @@ const showError = function(text) {
   }, 10000)
 }
 
-const fetchPage = function(pageTitle) {
-  $('#page-title').text(pageTitle)
-  $('#page-content').text(`Loading...`)
+const setContent = function(html) {
+  $('#content').html(html)
+}
+
+const showLoading = function(title) {
+  const template = getTemplate('loading')
+  setContent(template({title: title}))
+}
+
+const showPage = function(pageTitle) {
+  showLoading(pageTitle)
   let pageTitleURL = pageTitle.replace(/\\/, '%2F').replace(/\./, '%2E')
   ajax({
     method: 'GET',
     url: `${root}page/${pageTitleURL}/with_html`,
     success: function(page) {
-      $('#page-title').text(page.title)
       let elements = $.parseHTML(page.html)
       let sections = elements.filter((el) => el.tagName == "SECTION")
       let content = sections.map((el) => el.outerHTML).join("")
-      $('#page-content').html(content)
+      let template = getTemplate('page')
+      setContent(template({page: page, content: content}))
       history.pushState({title: page.title, id: page.id, key: page.key}, page.key, `${server}page/${page.key}`)
       $('a[rel="mw:WikiLink"]').click(goToTitle)
+      $('#edit-page').click(function(event) {
+        event.preventDefault()
+        let title = $(this).data('title')
+        routeTo(`/edit`, new URLSearchParams(`?title=${title}`))
+        return false
+      })
     },
     error: function(xhr, status, text) {
       showError(`error getting page ${pageTitle}: ${text}`)
@@ -115,13 +130,14 @@ const fetchPage = function(pageTitle) {
 const goToTitle = function(event) {
   event.preventDefault()
   let title = $(this).attr('title')
-  fetchPage(title)
+  showPage(title)
   return false
 }
 
-const noSuchRoute = function(pathname) {
-  $('#page-title').text("<No such page>")
-  $('#page-content').text(`No such page ${pathname}`)
+const noSuchRoute = function(route) {
+  const noSuchRouteTemplate = getTemplate('no-such-route')
+  const contents = noSuchRouteTemplate({route: route})
+  setContent(contents)
 }
 
 const routeTo = function(pathname, args) {
@@ -329,13 +345,20 @@ const logout = function () {
   resetNavbar()
 }
 
+const templates = {}
+
+const getTemplate = function(id) {
+  if (!(id in templates)) {
+    templates[id] = compileTemplate(id)
+  }
+  return templates[id]
+}
+
 const compileTemplate = function(id) {
   let source = $(`#${id}`).text()
   let template = Handlebars.compile(source)
   return template
 }
-
-let searchTemplate = null
 
 const search = function(args) {
   let q = args.get('q')
@@ -344,22 +367,43 @@ const search = function(args) {
     return
   } else {
     history.pushState({q: q}, q, `${server}search?q=${q}`)
-    $("#page-title").text(`Search results for ${q}`)
-    $("#page-content").text(`Searching...`)
+    showLoading(`Search results for ${q}`)
     ajax({
       method: "GET",
       url: `${root}search/page`,
       data: {q: q},
       success: function(results) {
-        if (!searchTemplate) {
-          searchTemplate = compileTemplate('search-page')
-        }
-        let contents = searchTemplate({pages: results.pages})
-        $("#page-content").html(contents)
+        let searchTemplate = getTemplate('search')
+        let contents = searchTemplate({pages: results.pages, q: q})
+        setContent(contents)
         $(".search-result-title").click(goToTitle)
       }
     })
   }
+}
+
+const edit = function(args) {
+  let title = args.get('title')
+
+  if (!title) {
+    showError(`No 'title' parameter for editor.`)
+    return
+  }
+
+  showLoading(`Editing ${title}`)
+
+  let pageTitleURL = title.replace(/\\/, '%2F').replace(/\./, '%2E')
+
+  ajax({
+    method: 'GET',
+    url: `${root}page/${pageTitleURL}`,
+    success: function(page) {
+      let editTemplate = getTemplate('edit')
+      let contents = editTemplate({page: page})
+      setContent(contents)
+    }
+  })
+
 }
 
 $(document).ready(function() {

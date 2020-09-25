@@ -241,7 +241,13 @@ const getAccessToken = function() {
 const getProfile = function(callback) {
   ajax({
     url: profileurl,
-    success: callback,
+    success: function(profile) {
+      // workaround: this endpoint sometimes returns text/html instead of application/json
+      if (String.isString(profile)) {
+        profile = JSON.parse(profile)
+      }
+      callback(profile)
+    },
     error: function() {
       // Just continue
       callback(null)

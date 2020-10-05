@@ -212,7 +212,7 @@ const saveLoginResults = function(results) {
   // TODO: save other important data
   localStorage.setItem('access_token', results.access_token)
   localStorage.setItem('refresh_token', results.refresh_token)
-  localStorage.setItem('access_token_expired_ms', String.toString(Date.now() + results.expires_in  * 1000))
+  localStorage.setItem('access_token_expired_ms', (Date.now() + results.expires_in  * 1000.0).toString())
 }
 
 const clearLoginResults = function() {

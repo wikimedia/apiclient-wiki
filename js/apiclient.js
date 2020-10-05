@@ -177,8 +177,20 @@ const startLogin = function() {
 
 const endLogin = function() {
   let query = (new URL(document.location)).searchParams
-  let code = query.get('code')
   let state = query.get('state')
+  let error = query.get('error')
+  if (error) {
+    let errorDescription = query.get('error_description')
+    let message = query.get('message')
+    showError((message) ? message : ((errorDescription) ? errorDescription : error))
+    if (state) {
+      routeTo(state)
+    } else {
+      routeTo('/')
+    }
+    return
+  }
+ let code = query.get('code')
   let pkce = loadPKCE()
   let data = {
     grant_type: "authorization_code",

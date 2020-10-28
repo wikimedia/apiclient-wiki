@@ -19,6 +19,7 @@ const profileurl = `${authroot}/oauth2/resource/profile`
 // API root
 
 const root = 'https://api.wikimedia.org/core/v1/wikipedia/en/'
+const feeds = 'https://api.wikimedia.org/feed/v1/wikipedia/en/'
 
 const routes = [
   [new RegExp('^/$'), function() { showPage('Main Page')}],
@@ -27,7 +28,8 @@ const routes = [
   [new RegExp('^/page/(.*)$'), function(match) { showPage(match[1]) }],
   [new RegExp('^/callback$'), function() { endLogin() }],
   [new RegExp('^/search$'), function(match, args) { search(args) }],
-  [new RegExp('^/edit$'), function(match, args) { edit(args) }]
+  [new RegExp('^/edit$'), function(match, args) { edit(args) }],
+  [new RegExp('^/featured$'), function(match) { showFeatured() }]
 ]
 
 const ajax = function(args) {
@@ -123,6 +125,36 @@ const showPage = function(pageTitle) {
     },
     error: function(xhr, status, text) {
       showError(`error getting page ${pageTitle}: ${text}`)
+    }
+  })
+}
+
+// from https://stackoverflow.com/questions/1267283/how-can-i-pad-a-value-with-leading-zeros
+
+const lp = function(number, width) {
+  width -= number.toString().length;
+  if ( width > 0 )
+  {
+    return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+  }
+  return number + ""; // always return a string
+}
+
+const showFeatured = function() {
+  const now = new Date()
+  const [year, month, day] = [now.getFullYear(), now.getMonth() + 1, now.getDate()]
+  showLoading(`Featured content for ${now.toLocaleDateString()}`)
+  ajax({
+    method: 'GET',
+    url: `${feeds}featured/${lp(year, 4)}/${lp(month, 2)}/${lp(day, 2)}`,
+    success: function(featured) {
+      let template = getTemplate('featured')
+      setContent(template({tfa: featured.tfa}))
+      history.pushState({year: year, month: month, day: day}, 'featured', `${server}featured`)
+      $('a[rel="mw:WikiLink"]').click(goToTitle)
+    },
+    error: function(xhr, status, text) {
+      showError(`error getting featured content: ${text}`)
     }
   })
 }
@@ -229,7 +261,7 @@ const saveLoginResults = function(results) {
 
 const clearLoginResults = function() {
   // TODO: save other important data
-  localStorage.removeItem('access_token')
+  localSatorage.removeItem('access_token')
   localStorage.removeItem('refresh_token')
   localStorage.removeItem('access_token_expired_ms')
 }

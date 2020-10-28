@@ -26,7 +26,7 @@
               <a class="nav-link" id="navbar-home" href="/page/Main_Page">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="navbar-feeds" href="/feeds">Feeds</a>
+              <a class="nav-link" id="navbar-featured" href="/featured">Featured</a>
             </li>
             <li class="nav-item">
               <a class="nav-link visible" id="navbar-login" href="#">Login</a>
@@ -101,6 +101,23 @@
             </li>
           {{/each}}
         </ul>
+      </div>
+    </script>
+    <script id="featured" lang="mustache">
+      <h1 id="page-title">Featured content for {{date}}</h1>
+      <div id="page-content">
+        <div class="media">
+          <div class="media-body">
+            <img src="{{tfa.thumbnail.source}}" width="{{tfa.thumbnail.width}}" height="{tfa.thumbnail.height}}" class="align-self-start mr-3">
+            <h2>
+              <a href="/page/{{tfa.titles.canonical}}" class="mw:WikiLink" title="{{tfa.titles.canonical}}">{{tfa.titles.normalized}}</a>
+            </h2>
+            <p>
+            {{tfa.extract_html}}
+            </p>
+            <p><a href="/page/{{tfa.titles.canonical}}" class="mw:WikiLink" title="{{tfa.titles.canonical}}">More...</a></p>
+          <div>
+        </div>
       </div>
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>

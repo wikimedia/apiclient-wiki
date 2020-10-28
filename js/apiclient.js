@@ -143,13 +143,14 @@ const lp = function(number, width) {
 const showFeatured = function() {
   const now = new Date()
   const [year, month, day] = [now.getFullYear(), now.getMonth() + 1, now.getDate()]
-  showLoading(`Featured content for ${now.toLocaleDateString()}`)
+  const date = now.toLocaleDateString()
+  showLoading(`Featured content for ${date}`)
   ajax({
     method: 'GET',
     url: `${feeds}featured/${lp(year, 4)}/${lp(month, 2)}/${lp(day, 2)}`,
     success: function(featured) {
       let template = getTemplate('featured')
-      setContent(template({tfa: featured.tfa}))
+      setContent(template({tfa: featured.tfa, date: date}))
       history.pushState({year: year, month: month, day: day}, 'featured', `${server}featured`)
       $('a[rel="mw:WikiLink"]').click(goToTitle)
     },

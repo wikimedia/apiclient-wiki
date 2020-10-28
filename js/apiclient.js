@@ -470,6 +470,7 @@ $(document).ready(function() {
   $('#navbar-home').click(goHome)
   $('#navbar-login').click(startLogin)
   $('#navbar-logout').click(logout)
+  $('#navbar-featured').click(showFeatured)
   resetNavbar()
   $('#navbar-search').autoComplete({
     resolver: 'custom',
